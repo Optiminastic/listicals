@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-frame: #c9a59c;
-  --color-paper: #e3e2df;
-  --color-paper-raised: #ededeb;
+  --color-frame: #ffffff;
+  --color-paper: #ffffff;
+  --color-paper-raised: #f5f5f4;
   --color-ink: #161616;
   --color-ink-soft: #585652;
   --color-ink-faint: #908d87;
-  --color-line: #c7c5c0;
+  --color-line: #e4e2dd;
   --color-line-strong: #161616;
   --color-accent: #e1401b;
 
@@ -16,7 +16,7 @@
 }
 
 :root {
-  --background: #c9a59c;
+  --background: #ffffff;
   --foreground: #161616;
 }
 

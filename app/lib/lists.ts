@@ -1,6 +1,6 @@
 // Data layer for Roundup — the curated listicle journal.
-// Single source of truth for ranked lists + categories. Presentation
-// components depend on these types, never the other way around.
+// Single source of truth for ranked list blog posts. Presentation components
+// depend on these types, never the other way around.
 
 export type Category =
   | "SEO & Marketing"
@@ -20,6 +20,7 @@ export interface ListEntry {
 export interface Listicle {
   slug: string;
   title: string;
+  /** Kept only as an internal label — not shown as navigation/filters. */
   category: Category;
   /** How many items the list ranks (drives the "TOP N" badge). */
   count: number;
@@ -34,38 +35,6 @@ export interface Listicle {
   entries: ListEntry[];
   /** Optional closing line / takeaway. */
   closing?: string;
-}
-
-export interface CategoryMeta {
-  name: Category;
-  icon: string;
-  blurb: string;
-}
-
-export const CATEGORY_META: CategoryMeta[] = [
-  { name: "SEO & Marketing", icon: "📈", blurb: "Rank, reach, convert." },
-  { name: "Productivity", icon: "⚡", blurb: "Do more with less." },
-  { name: "Web Development", icon: "💻", blurb: "Ship better software." },
-  { name: "Design & Creative", icon: "🎨", blurb: "Make it beautiful." },
-];
-
-export const CATEGORIES: Category[] = CATEGORY_META.map((c) => c.name);
-
-export function categoryIcon(category: Category): string {
-  return CATEGORY_META.find((c) => c.name === category)?.icon ?? "📌";
-}
-
-/** URL-safe slug for a category, e.g. "SEO & Marketing" → "seo-marketing". */
-export function categorySlug(category: Category): string {
-  return category
-    .toLowerCase()
-    .replace(/&/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-export function categoryFromSlug(slug: string): Category | undefined {
-  return CATEGORIES.find((c) => categorySlug(c) === slug.toLowerCase());
 }
 
 const LISTS: Listicle[] = [
@@ -136,52 +105,6 @@ const LISTS: Listicle[] = [
     closing: "Combine three or four of these and you'll have a richer list than most paid exports.",
   },
   {
-    slug: "top-5-link-building-strategies",
-    title: "Top 5 Link-Building Strategies That Still Work",
-    category: "SEO & Marketing",
-    count: 5,
-    excerpt:
-      "Forget spammy directories. Five white-hat strategies that earn links Google actually rewards in 2026.",
-    date: "2026-05-29",
-    readingTime: 8,
-    author: "Marcus Webb",
-    authorRole: "Content Strategist",
-    intro: [
-      "Link building is still the hardest part of SEO — and the most faked. These five strategies are slow, legitimate, and durable, which is exactly why they keep working while shortcuts get penalized.",
-    ],
-    entries: [
-      { name: "Original research & data", tag: "Highest ROI", blurb: "Publish a survey or study and journalists will cite (and link) you for years." },
-      { name: "Digital PR", blurb: "Pitch genuinely newsworthy angles to relevant publications instead of mass-emailing bloggers." },
-      { name: "Guest posting (selectively)", blurb: "Write for a handful of respected sites in your niche, not every site that accepts posts." },
-      { name: "Broken-link building", blurb: "Find dead links on relevant pages and offer your resource as the replacement." },
-      { name: "Become a source (HARO-style)", blurb: "Answer reporter queries with sharp quotes to earn high-authority links." },
-    ],
-  },
-  {
-    slug: "top-7-email-marketing-platforms",
-    title: "Top 7 Email Marketing Platforms Compared",
-    category: "SEO & Marketing",
-    count: 7,
-    excerpt:
-      "From solo creators to scaling startups — the seven email platforms worth your list, ranked by who they're really for.",
-    date: "2026-05-18",
-    readingTime: 10,
-    author: "Marcus Webb",
-    authorRole: "Content Strategist",
-    intro: [
-      "Email still returns more per dollar than any other channel, but the 'best' platform depends entirely on your stage. Here are seven, each with the audience it actually fits.",
-    ],
-    entries: [
-      { name: "ConvertKit", tag: "Best for creators", blurb: "Tag-based automation and a clean creator-first workflow." },
-      { name: "Mailchimp", tag: "Best for beginners", blurb: "Familiar, forgiving, and packed with templates to start fast." },
-      { name: "Klaviyo", tag: "Best for ecommerce", blurb: "Deep store integrations and revenue-attributed flows." },
-      { name: "Brevo", tag: "Best value", blurb: "Generous free tier and pay-as-you-go sending." },
-      { name: "Beehiiv", tag: "Best for newsletters", blurb: "Built for growth, referrals, and monetizing an audience." },
-      { name: "ActiveCampaign", tag: "Best automation", blurb: "Powerful branching logic for complex customer journeys." },
-      { name: "Loops", tag: "Best for SaaS", blurb: "Developer-friendly product emails with a modern API." },
-    ],
-  },
-  {
     slug: "top-10-note-taking-apps",
     title: "Top 10 Note-Taking Apps for 2026",
     category: "Productivity",
@@ -208,28 +131,6 @@ const LISTS: Listicle[] = [
       { name: "Roam Research", tag: "Best for networked thought", blurb: "The tool that popularized bidirectional links." },
     ],
     closing: "Pick one and commit for a month before switching — the system matters more than the app.",
-  },
-  {
-    slug: "top-5-pomodoro-timers",
-    title: "Top 5 Pomodoro Timers to Beat Procrastination",
-    category: "Productivity",
-    count: 5,
-    excerpt:
-      "A timer is the cheapest productivity upgrade there is. Five that go beyond a plain 25-minute countdown.",
-    date: "2026-06-02",
-    readingTime: 5,
-    author: "Dana Cole",
-    authorRole: "Productivity Writer",
-    intro: [
-      "The Pomodoro technique is simple: work in focused sprints, rest between them. These five timers add just enough on top — tracking, blocking, ambience — without getting in the way.",
-    ],
-    entries: [
-      { name: "Forest", tag: "Best for motivation", blurb: "Grow a virtual tree that dies if you leave the app." },
-      { name: "Session", tag: "Best for Mac", blurb: "Blocks distracting sites and logs deep-work stats." },
-      { name: "Pomofocus", tag: "Best free web app", blurb: "Clean, browser-based, and syncs across devices." },
-      { name: "Flow", tag: "Best minimal", blurb: "A gorgeous menu-bar timer that stays out of the way." },
-      { name: "Be Focused", tag: "Best for iPhone", blurb: "Customizable intervals with simple reporting." },
-    ],
   },
   {
     slug: "top-6-ai-assistants-daily-work",
@@ -304,31 +205,6 @@ const LISTS: Listicle[] = [
     ],
   },
   {
-    slug: "top-8-free-apis-to-build-with",
-    title: "Top 8 Free APIs to Build Your Next Project",
-    category: "Web Development",
-    count: 8,
-    excerpt:
-      "Need data for a side project? Eight free, well-documented APIs to prototype something real this weekend.",
-    date: "2026-05-25",
-    readingTime: 7,
-    author: "Sam Okafor",
-    authorRole: "Software Engineer",
-    intro: [
-      "The fastest way to learn is to build something that talks to the real world. These eight APIs are free, generous, and beginner-friendly.",
-    ],
-    entries: [
-      { name: "OpenWeather", blurb: "Current conditions and forecasts for any location." },
-      { name: "TMDB", blurb: "A huge database of movies and TV shows with images." },
-      { name: "Stripe (test mode)", blurb: "Practice real payment flows with no real money." },
-      { name: "REST Countries", blurb: "Flags, currencies, and facts for every country." },
-      { name: "NASA APIs", blurb: "Astronomy photos and Mars rover imagery, all free." },
-      { name: "Unsplash", blurb: "High-quality royalty-free photos on demand." },
-      { name: "Open Library", blurb: "Book metadata and covers by ISBN." },
-      { name: "PokéAPI", blurb: "The classic starter dataset for learning to fetch." },
-    ],
-  },
-  {
     slug: "top-5-free-stock-photo-sites",
     title: "Top 5 Free Stock Photo Sites (No Attribution)",
     category: "Design & Creative",
@@ -389,18 +265,6 @@ export function getAllSlugs(): string[] {
   return LISTS.map((l) => l.slug);
 }
 
-export function getListsByCategory(category: Category): Listicle[] {
-  return getAllLists().filter((l) => l.category === category);
-}
-
-/** Groups for the homepage: every category with its lists, in display order. */
-export function getGroupedLists(): { category: CategoryMeta; lists: Listicle[] }[] {
-  return CATEGORY_META.map((category) => ({
-    category,
-    lists: getListsByCategory(category.name),
-  })).filter((group) => group.lists.length > 0);
-}
-
 /** Stable formatter — avoids locale/clock differences between server and client. */
 export function formatDate(iso: string): string {
   const [year, month, day] = iso.split("-").map(Number);
@@ -411,22 +275,9 @@ export function formatDate(iso: string): string {
   return `${months[month - 1]} ${day}, ${year}`;
 }
 
-/** Short meta line shown on cards, e.g. "10 PICKS · 6 MIN". */
+/** Short meta line shown on cards, e.g. "10 picks · 6 min". */
 export function cardMeta(list: Listicle): string {
   return `${list.count} picks · ${list.readingTime} min`;
-}
-
-/**
- * Category-derived tag pills for a list row, e.g.
- * "SEO & Marketing" + count 3 → ["SEO", "MARKETING", "TOP 3"].
- */
-export function listTags(list: Listicle): string[] {
-  const words = list.category
-    .replace(/&/g, " ")
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((w) => w.toUpperCase());
-  return [...words, `TOP ${list.count}`];
 }
 
 const MONTHS_SHORT = [

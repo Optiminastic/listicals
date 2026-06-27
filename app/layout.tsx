@@ -32,11 +32,9 @@ export default function RootLayout({
       lang="en"
       className={`${bodoni.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-frame text-ink">
-        {/* Mauve frame around a light-grey page, matching the reference design */}
-        <div className="min-h-screen p-3 sm:p-6 lg:p-9">
-          <div className="mx-auto w-full max-w-6xl bg-paper">{children}</div>
-        </div>
+      <body className="min-h-full bg-paper text-ink">
+        {/* Full white background, wide centered content — no framed margin. */}
+        <div className="mx-auto w-full max-w-[88rem]">{children}</div>
       </body>
     </html>
   );

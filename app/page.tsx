@@ -3,12 +3,12 @@ import EventRow from "@/app/components/EventRow";
 import SubscribeNow from "@/app/components/SubscribeNow";
 import SiteFooter from "@/app/components/SiteFooter";
 import LatestFromBlog from "@/app/components/LatestFromBlog";
-import { getGroupedLists } from "@/app/lib/lists";
+import { getAllLists } from "@/app/lib/lists";
 
 export const revalidate = 300;
 
 export default function Home() {
-  const groups = getGroupedLists();
+  const lists = getAllLists();
 
   return (
     <>
@@ -44,23 +44,10 @@ export default function Home() {
           </form>
         </section>
 
-        {/* Grouped sections */}
+        {/* All lists — flat, newest first */}
         <div id="lists" className="px-5 sm:px-8">
-          {groups.map((group) => (
-            <section key={group.category.name} className="pt-8">
-              {/* Black pill label */}
-              <div className="inline-block bg-line-strong px-4 py-2">
-                <span className="eyebrow font-semibold text-paper">
-                  {group.category.name}
-                </span>
-              </div>
-
-              <div className="mt-2">
-                {group.lists.map((list) => (
-                  <EventRow key={list.slug} list={list} />
-                ))}
-              </div>
-            </section>
+          {lists.map((list) => (
+            <EventRow key={list.slug} list={list} />
           ))}
         </div>
 

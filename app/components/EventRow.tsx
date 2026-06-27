@@ -1,17 +1,16 @@
 import Link from "next/link";
 import type { Listicle } from "@/app/lib/lists";
-import { categoryIcon, dateBlock, listTags } from "@/app/lib/lists";
+import { dateBlock } from "@/app/lib/lists";
 import CoverTile from "./CoverTile";
 
 // One list rendered as a magazine "event" row: a date stamp, a thumbnail, the
-// title + meta + description + tag pills, and an orange jump arrow.
+// title + meta + description, and an orange jump arrow.
 export default function EventRow({ list }: { list: Listicle }) {
   const date = dateBlock(list.date);
-  const tags = listTags(list);
 
   return (
     <Link
-      href={`/list/${list.slug}`}
+      href={`/${list.slug}`}
       className="group grid grid-cols-[3rem_1fr] gap-x-4 border-b border-line py-6 sm:grid-cols-[4.5rem_13rem_1fr_2rem] sm:gap-x-6 sm:py-7"
     >
       {/* Date block */}
@@ -45,26 +44,12 @@ export default function EventRow({ list }: { list: Listicle }) {
         </h3>
 
         <div className="mt-2 flex items-center gap-1.5 text-ink-soft">
-          <span aria-hidden>{categoryIcon(list.category)}</span>
-          <span className="text-sm">
-            {list.category} · {list.count} picks
-          </span>
+          <span className="text-sm">{list.count} picks</span>
         </div>
 
         <p className="clamp-2 mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
           {list.excerpt}
         </p>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="eyebrow border border-line px-2.5 py-1 text-ink-soft"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* Jump arrow */}

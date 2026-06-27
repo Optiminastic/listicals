@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { CATEGORY_META, categorySlug } from "@/app/lib/lists";
 
 const FOLLOW = ["Instagram", "Twitter", "Facebook", "YouTube"];
 
 export default function SiteFooter() {
   return (
     <footer className="border-t border-line">
-      <div className="grid grid-cols-2 gap-8 px-5 py-12 sm:px-8 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-8 px-5 py-12 sm:px-8 md:grid-cols-3">
         {/* Brand + blurb */}
         <div className="col-span-2 md:col-span-1">
           <Link
@@ -19,23 +18,6 @@ export default function SiteFooter() {
             We test the tools, apps and tactics so you don&apos;t have to — then
             rank only the ones worth your time.
           </p>
-        </div>
-
-        {/* Menu = categories */}
-        <div>
-          <h3 className="eyebrow text-ink-faint">Menu</h3>
-          <ul className="mt-4 space-y-2.5">
-            {CATEGORY_META.map((c) => (
-              <li key={c.name}>
-                <Link
-                  href={`/category/${categorySlug(c.name)}`}
-                  className="text-sm text-ink-soft transition-colors hover:text-ink"
-                >
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* Contact */}

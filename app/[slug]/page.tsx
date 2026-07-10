@@ -122,6 +122,32 @@ function blogPostingLd(opts: {
   };
 }
 
+/** FAQPage structured data built from a post's FAQ entries. */
+function faqPageLd(faq: { question: string; answer: string }[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+/**
+ * Demote any <h1> in a Signalor content_html fragment to <h2> so the page
+ * title remains the sole <h1>. Case-insensitive on tag name and attributes.
+ */
+function demoteH1ToH2(html: string): string {
+  return html
+    .replace(/<h1(\s[^>]*)?>/gi, "<h2$1>")
+    .replace(/<\/h1\s*>/gi, "</h2>");
+}
+
 /** ItemList structured data for a ranked listicle's entries. */
 function itemListLd(list: Listicle): Record<string, unknown> {
   return {
@@ -230,17 +256,22 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
+  const contentHtml = demoteH1ToH2(post.content_html);
+
   return (
     <>
       <JsonLd
-        data={blogPostingLd({
-          slug: post.slug,
-          title: post.title,
-          description: toMetaDescription(post.description || post.content_html),
-          image: post.image_url || OG_IMAGE,
-          datePublished: post.published_at ?? undefined,
-          author: SITE_NAME,
-        })}
+        data={[
+          blogPostingLd({
+            slug: post.slug,
+            title: post.title,
+            description: toMetaDescription(post.description || post.content_html),
+            image: post.image_url || OG_IMAGE,
+            datePublished: post.published_at ?? undefined,
+            author: SITE_NAME,
+          }),
+          ...(post.faq.length ? [faqPageLd(post.faq)] : []),
+        ]}
       />
       <TopNav />
       <main className="flex-1">
@@ -269,8 +300,28 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           ) : null}
           <div
             className="mt-8 [&_a]:text-accent [&_a]:underline [&_h2]:font-display [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:uppercase [&_h2]:text-ink [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-ink [&_li]:ml-5 [&_li]:list-disc [&_li]:text-ink-soft [&_p]:mt-4 [&_p]:text-lg [&_p]:leading-relaxed [&_p]:text-ink-soft [&_ul]:mt-4"
-            dangerouslySetInnerHTML={{ __html: post.content_html }}
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
+
+          {post.faq.length ? (
+            <section className="mt-16 border-t border-line pt-10">
+              <h2 className="headline text-3xl font-bold uppercase text-ink sm:text-4xl">
+                Frequently Asked Questions
+              </h2>
+              <dl className="mt-8 space-y-6">
+                {post.faq.map((item) => (
+                  <div key={item.question} className="border-t border-line pt-6">
+                    <dt className="font-display text-xl font-semibold text-ink">
+                      {item.question}
+                    </dt>
+                    <dd className="mt-2 text-lg leading-relaxed text-ink-soft">
+                      {item.answer}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
         </article>
       </main>
       <SiteFooter />

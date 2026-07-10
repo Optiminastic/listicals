@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Bodoni_Moda, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import {
@@ -92,6 +93,17 @@ export default function RootLayout({
         {/* Full white background, wide centered content — no framed margin. */}
         <div className="mx-auto w-full max-w-[88rem]">{children}</div>
         <Analytics />
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-PJT3WYKHFY"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-PJT3WYKHFY');`}
+        </Script>
       </body>
     </html>
   );
